@@ -1,3 +1,7 @@
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using ShopTu.Model;
+
 namespace ShopTu.Data.Migrations
 {
     using System;
@@ -14,18 +18,25 @@ namespace ShopTu.Data.Migrations
 
         protected override void Seed(ShopTu.Data.TeduShopDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new TeduShopDbContext()));
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new TeduShopDbContext()));
+            var user = new ApplicationUser()
+            {
+                UserName = "tuhoang",
+                Email = "hoangtu92tn@gmail.com",
+                EmailConfirmed = true,
+                BirtDay = DateTime.Now,
+                FullName = "Hoang Ngoc Tu"
+            };
+            manager.Create(user, "123123123");
+            if (!roleManager.Roles.Any())
+            {
+                roleManager.Create(new IdentityRole {Name = "Admin"});
+                roleManager.Create(new IdentityRole { Name = "User" });
+            }
+            var adminUser = manager.FindByEmail("hoangtu92tn@gmail.com");
+            manager.AddToRoles(adminUser.Id, new string[] {"Admin", "User"});
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
         }
     }
 }

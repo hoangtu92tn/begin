@@ -10,17 +10,19 @@ using Owin;
 using ShopTu.Data;
 using ShopTu.Data.Infrastructure;
 using ShopTu.Data.Repositories;
+using ShopTu.Model;
 using ShopTu.Service;
 
 [assembly: OwinStartup(typeof(ShopTu.Web.App_Start.Startup))]
 
 namespace ShopTu.Web.App_Start
 {
-    public class Startup
+    public partial class Startup
     {
         public void Configuration(IAppBuilder app)
         {
             ConfigAutoFac(app);
+            ConfigureAuth(app);
         }
 
         public void ConfigAutoFac(IAppBuilder app)
@@ -36,6 +38,13 @@ namespace ShopTu.Web.App_Start
             builder.RegisterAssemblyTypes(typeof(ProductRepository).Assembly)
                 .Where(t => t.Name.EndsWith("Repository"))
                 .AsImplementedInterfaces().InstancePerRequest();
+
+
+            //Indentity
+            builder.RegisterType<ApplicationUserManager>().AsSelf().InstancePerDependency();
+            builder.RegisterType<ApplicationSignInManager>().AsSelf().InstancePerDependency();
+            builder.RegisterType<ApplicationUserManager>().AsSelf().InstancePerDependency();
+            builder.RegisterType<ApplicationUserManager>().AsSelf().InstancePerDependency();
 
             //Service
             builder.RegisterAssemblyTypes(typeof(ProductService).Assembly)

@@ -4,11 +4,13 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity.EntityFramework;
+using ShopTu.Model;
 using ShopTu.Model.Models;
 
 namespace ShopTu.Data
 {
-    public class TeduShopDbContext : DbContext
+    public class TeduShopDbContext : IdentityDbContext<ApplicationUser>
     {
         public TeduShopDbContext() : base("TeduShopConnection")
         {
@@ -38,10 +40,15 @@ namespace ShopTu.Data
 
         public DbSet<Error> Errors { set; get; }
 
+        public static TeduShopDbContext Create()
+        {
+            return new TeduShopDbContext();
+        }
 
         protected override void OnModelCreating(DbModelBuilder builder)
         {
-
+            builder.Entity<IdentityUserRole>().HasKey(i => new {i.UserId,i.RoleId});
+            builder.Entity<IdentityUserLogin>().HasKey(i => i.UserId);
         }
     }
 }
