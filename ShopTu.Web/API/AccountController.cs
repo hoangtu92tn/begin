@@ -9,6 +9,7 @@ using System.Web.UI.WebControls;
 
 namespace ShopTu.Web.API
 {
+    [RoutePrefix("api/account")]
     public class AccountController : ApiController
     {
         private ApplicationSignInManager _signInManager;
@@ -48,6 +49,7 @@ namespace ShopTu.Web.API
             }
         }
 
+        [Route("login")]
         [HttpPost]
         [AllowAnonymous]
         public async Task<HttpResponseMessage> Login(HttpRequestMessage request, string email,string password,bool rememberme)

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
+using Microsoft.Owin.Security.DataProtection;
 using Owin;
 using ShopTu.Data;
 using ShopTu.Data.Infrastructure;
@@ -41,10 +44,12 @@ namespace ShopTu.Web.App_Start
 
 
             //Indentity
-            builder.RegisterType<ApplicationUserManager>().AsSelf().InstancePerDependency();
-            builder.RegisterType<ApplicationSignInManager>().AsSelf().InstancePerDependency();
-            builder.RegisterType<ApplicationUserManager>().AsSelf().InstancePerDependency();
-            builder.RegisterType<ApplicationUserManager>().AsSelf().InstancePerDependency();
+                
+            builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>().InstancePerRequest();
+            builder.RegisterType<ApplicationUserManager>().AsSelf().InstancePerRequest();
+            builder.RegisterType<ApplicationSignInManager>().AsSelf().InstancePerRequest();
+            builder.Register(x => HttpContext.Current.GetOwinContext().Authentication).InstancePerRequest();
+            builder.Register(x => app.GetDataProtectionProvider()).InstancePerRequest();
 
             //Service
             builder.RegisterAssemblyTypes(typeof(ProductService).Assembly)
