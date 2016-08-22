@@ -2,6 +2,7 @@
 using ShopTu.Data.Repositories;
 using ShopTu.Model.Models;
 using System.Collections.Generic;
+using System;
 
 namespace ShopTu.Service
 {
@@ -14,8 +15,9 @@ namespace ShopTu.Service
         void Update(Product product);
 
         IEnumerable<Product> GetAll();
+        IEnumerable<Product> GetAll(string keywork);
 
-        //IEnumerable<Product> GetAllPaging(int page, int pageSize, out int total);
+            //IEnumerable<Product> GetAllPaging(int page, int pageSize, out int total);
         Product GetById(int id);
 
         void Commit();
@@ -65,6 +67,11 @@ namespace ShopTu.Service
         public void Commit()
         {
             _unitOfWork.Commit();
+        }
+
+        public IEnumerable<Product> GetAll(string keywork)
+        {
+            return _productRepository.GetMulti(x=>x.Name.ToLower().Contains(keywork.ToLower())||x.Description.Contains(keywork.ToLower()));
         }
     }
 }

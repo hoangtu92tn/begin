@@ -6,20 +6,19 @@ using ShopTu.Web.App_Start;
 using System.Web;
 using System.Web.Http;
 using System.Web.UI.WebControls;
+using ShopTu.Service;
+using ShopTu.Web.Infrustructere.Core;
 
 namespace ShopTu.Web.API
 {
     [RoutePrefix("api/account")]
-    public class AccountController : ApiController
+    public class AccountController : ApiControllerBase
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
-        public AccountController()
-        {
-        }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public AccountController(IErrorService errorService,ApplicationUserManager userManager, ApplicationSignInManager signInManager) : base(errorService)
         {
             UserManager = userManager;
             SignInManager = signInManager;

@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
+using Autofac.Integration.WebApi;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.DataProtection;
@@ -32,7 +33,9 @@ namespace ShopTu.Web.App_Start
         {
             var builder = new ContainerBuilder();
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
- 
+
+            builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerRequest();
             builder.RegisterType<DbFactory>().As<IDbFactory>().InstancePerRequest();
 
@@ -58,7 +61,7 @@ namespace ShopTu.Web.App_Start
 
             Autofac.IContainer container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
-            //GlobalConfiguration.Configuration.DependencyResolver=new autofacwebap
+            GlobalConfiguration.Configuration.DependencyResolver=new AutofacWebApiDependencyResolver((IContainer)container);
         }
     }
 }
